@@ -2,7 +2,7 @@
 
 DEVASC Project Activity 3. This repository is the Option 2 app, a phone and laptop demo of one public address card.
 
-The repository is https://github.com/ichigokekiii/sys-ad. The live page is `[Render live link to be added]`.
+The repository is https://github.com/ichigokekiii/sys-ad. The live page is `https://address-card.onrender.com/`.
 
 ## Option 2
 
@@ -92,7 +92,7 @@ On the phone, open `http://<pc-lan-ip>:5000`. Direct mode ignores `X-Forwarded-F
 web: gunicorn app:app --bind 0.0.0.0:$PORT
 ```
 
-The free tier sleeps. Open `[Render live link to be added]` a few minutes before the demo.
+The free tier sleeps. Open `https://address-card.onrender.com/` a few minutes before the demo.
 
 On Render, set `LOOKUP_MODE` to `forwarded`, or leave it unset and let `RENDER=true` select forwarded mode. Render sets `RENDER`. `LOOKUP_MODE=direct` is still direct when `RENDER` is true, so do not set `direct` on the hosted demo.
 

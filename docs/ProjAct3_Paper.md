@@ -20,14 +20,14 @@ Social coding means the work is shared in Git. Each change reaches main through 
 
 Address Card is the page for the demo. It is one Flask page. The map fills the screen, and the address card is a modal over that map. The same page is what we open on a phone and on a laptop.
 
-The page has four features.
+The page has four features. Figure 1 shows the live page with the search box, the pitched map, and the open card.
 
-- A map that fills the screen. MapLibre draws it with the OpenFreeMap Liberty style. The map stays flat, because this app is not using Mapbox. One pin marks the lookup. A click on that pin opens the card. The map needs no API key.
-- A centered address card. A gray layer covers the map while the card is open. The X sits on that gray, outside the card. The front lists IPv4, IPv6, the ISP, the ASN, the place, and MAC. MAC reads "Not available", because a website cannot see a device MAC address. The back holds the roast, the coordinates, the API name, and the one ISP question.
+- A map that fills the screen. MapLibre draws it with the OpenFreeMap Liberty style. The camera pitches, so buildings can stand up. The tiles are OpenFreeMap, not Mapbox. The visitor pin is orange. A click on that pin opens the card. A search box at the top left looks up places in Metro Manila, and a chosen place gets a blue pin. The map needs no API key.
+- A centered address card. A gray layer covers the map while the card is open. The X sits at the top-right corner of the screen, outside the card. The front lists IPv4, the ASN, and MAC. MAC reads "None", because a website cannot see a device MAC address. IPv6 is its own row. The back holds the roast, the coordinates, the API name, and the one ISP question. The back scrolls inside the card.
 - An IPv6 line on the front. The browser fetches `https://api6.ipify.org?format=json`. The line reads "Checking IPv6" until the fetch returns. Failure says "No IPv6 yet".
 - One roast and one ISP question. Both sit on the back of the card. The roast is one line about the ISP or the country.
 
-On a laptop and on a phone, the visitor clicks the pin. The card opens in the center. A click on the card flips it. The X on the gray layer closes it. A control labeled "Address card" opens it again when the map has no pin.
+On a laptop and on a phone, the visitor clicks the pin. The card opens in the center. A click on the card flips it, except a click on a quiz choice or on Check. The X at the corner of the screen closes it. The search box opens a place in Metro Manila. That place has no public IP of its own, so the network rows stay this connection's. The place address is one line on the front, and the full line is on the back.
 
 When the visitor asks for reduced motion, or when scripting is off, the card stays flat. Both faces are already in the HTML.
 
@@ -45,14 +45,14 @@ Two notice sentences are fixed. When the lookup is only partly successful, the p
 
 The layout sample, used while the page was designed, is the documentation address `203.0.113.42`. The sample ISP is PLDT, the ASN is AS9299, the country code is PH, and the city is Manila. The live page replaces those fields with the lookup.
 
-A right answer to the ISP question shows "That's the one." A wrong answer shows "Close. This network is " and then the ISP name. When the ISP is unknown, the page shows no form. The prompt says the provider did not come back.
+A right answer shows the word Correct in blue, with confetti. The words then fade, and the map moves to the visitor pin. A wrong answer shows the word Wrong in blue, then "This network is " and the ISP name, and the word shakes. Those words sit on the map, not on the card. The grade stored by the server is still "Correct." or "Close. This network is " plus the ISP name. When the ISP is unknown, the page shows no form. The prompt says the provider did not come back.
 
 The activity deliverables are these.
 
-- Address Card, the Flask page, with `app.py`, `ipinfo.py`, `fun.py`, `templates/index.html`, `static/map.js`, and `static/card.js`.
+- Address Card, the Flask page, with `app.py`, `ipinfo.py`, `fun.py`, `places.py`, `templates/index.html`, `static/map.js`, `static/card.js`, and `static/search.js`.
 - This paper.
 - The GitHub repository at https://github.com/ichigokekiii/sys-ad. The branches in section 4 are the plan. Those pull requests are not open yet.
-- The Render page at [Render live link to be added], plus a LAN backup on John's PC.
+- The Render page at https://address-card.onrender.com/, plus a LAN backup on John's PC.
 - A talk of 10 to 15 minutes, with a live demo on a phone and on a laptop.
 
 The demo has these objectives.
@@ -170,10 +170,10 @@ The slide says Option 2. The speaker gives the reason from section 1. The class 
 
 The slide lists the four features we are shipping.
 
-- The map fills the screen. MapLibre draws it with the OpenFreeMap Liberty style. The map stays flat, because this app is not using Mapbox. One pin marks the lookup. A click on that pin opens the card. The map needs no API key.
-- The address card opens in the center, on a gray layer. The X sits on that gray, outside the card. A click on the card flips it. The phone uses the same card.
-- The front lists IPv4, IPv6, the ISP, the ASN, the place, and MAC. MAC reads "Not available". Failure on the IPv6 fetch says "No IPv6 yet".
-- The back holds the roast, the coordinates, the API name, and the one ISP question.
+- The map fills the screen. MapLibre draws it with the OpenFreeMap Liberty style. The camera pitches. The tiles are OpenFreeMap, not Mapbox. The visitor pin is orange. A search in Metro Manila drops a blue pin. The map needs no API key.
+- The address card opens in the center, on a gray layer. The X sits at the top-right corner of the screen. A click on the card flips it, except a click on a quiz choice or on Check. The phone uses the same card.
+- The front lists IPv4, the ASN, and MAC. MAC reads "None". IPv6 is its own row. Failure on the IPv6 fetch says "No IPv6 yet".
+- The back holds the roast, the coordinates, the API name, and the one ISP question. The back scrolls. A right answer and a wrong answer appear as blue words on the map, then fade.
 
 ### Slide 4. Why these features. Minute 3 to 4.
 
@@ -181,27 +181,30 @@ The speaker says why these four stayed. They can be shown live on a phone and on
 
 ### Slide 5. Architecture and APIs. Minute 4 to 5.
 
-The speaker states the shape of the app. Address Card has no database and no API key. ipwho.is is first. ipapi.co is second. ipify supplies an IPv4 address only when the server still has none. The map fills the screen. MapLibre draws it with the OpenFreeMap Liberty style. The map stays flat, because this app is not using Mapbox. `fun.py` still has `map_embed` for the tests. The page does not show that iframe. Each lookup call times out after 4 seconds. A failure becomes a notice, and the route still returns status 200. The server sees the forwarded address and fills the IPv4 fields. The browser asks `https://api6.ipify.org?format=json` for the IPv6 line.
+The speaker states the shape of the app. Address Card has no database and no API key. ipwho.is is first. ipapi.co is second. ipify supplies an IPv4 address only when the server still has none. The map fills the screen. MapLibre draws it with the OpenFreeMap Liberty style. The camera pitches. The tiles are OpenFreeMap, not Mapbox. A place search uses Nominatim and keeps only results inside Metro Manila. `fun.py` still has `map_embed` for the tests. The page does not show that iframe. Each lookup call times out after 4 seconds. A failure becomes a notice, and the route still returns status 200. The server sees the forwarded address and fills the IPv4 fields. The browser asks `https://api6.ipify.org?format=json` for the IPv6 line.
 
 ### Slide 6. Code walkthrough. Minute 5 to 7.
 
 The speaker names six files and what each one owns.
 
-- `app.py` is the Flask shell. It serves the index route and `POST /quiz`. Gunicorn loads `app:app`.
+- `app.py` is the Flask shell. It serves the index route, `POST /quiz`, and `GET /places`. Gunicorn loads `app:app`.
 - `ipinfo.py` parses the forwarding header and the provider JSON. It owns the timeout and the fallback order.
 - `fun.py` owns the roast lines, the ISP question, the grading, and `map_embed`. The tests call `map_embed`. The page does not show that iframe. Those functions are pure. The tests in sprint 3 can call them without a browser.
-- `templates/index.html` holds the map container, both faces of the card, and the ISP question on the back. Both faces stay in the page when scripting is off. The IPv6 fetch is a few lines in this file.
-- `static/map.js` starts MapLibre with the OpenFreeMap Liberty style. It places one pin on the lookup coordinates. A click on that pin opens the card. It loads no API key.
-- `static/card.js` opens the card, flips it, and closes it. The X sits outside the card. The control labeled "Address card" opens the card when the map has no pin.
+- `places.py` searches Metro Manila. A place outside the box is dropped. A short query returns nothing. It does not invent an IP.
+- `templates/index.html` holds the map container, the search box, both faces of the card, and the ISP question on the back. Both faces stay in the page when scripting is off. The IPv6 fetch is a few lines in this file.
+- `static/map.js` starts MapLibre with the OpenFreeMap Liberty style and a pitched camera. It places the orange visitor pin and the blue place pin. A click on a pin opens the card. It loads no API key.
+- `static/card.js` opens the card, flips it, scrolls the back, and closes it. The X sits at the corner of the screen. A right or wrong answer is blue text on the map.
+- `static/search.js` fills the search list from `GET /places` and opens the chosen place.
 
 ### Slide 7. Live demo on the phone and the laptop. Minute 7 to 10.
 
 Open the Render URL a few minutes early. Section 6 says why. Then follow this order.
 
-1. On the laptop, drag and zoom the flat map. Click the pin. The card opens in the center on a gray layer. Read IPv4, IPv6, the ISP, the ASN, the place, and the MAC line.
-2. Click the card. Read the roast and the coordinates. Then answer the ISP question.
-3. Click the X on the gray layer. The map remains. Click the pin to open the card again.
-4. On the phone, open the same URL. Tap the pin. Tap the card to flip it. Tap the X to close it.
+1. On the laptop, drag, zoom, and pitch the map. Click the orange pin. The card opens in the center on a gray layer. Read IPv4, the ASN, MAC, and IPv6.
+2. Click the card. Read the roast and the coordinates. Select a choice, then press Check. A right answer says Correct and throws confetti. A wrong answer says Wrong and names the network.
+3. Search a place in Metro Manila. A blue pin drops. The card uses the same layout. That place has no public IP.
+4. Click the X at the corner of the screen. The map remains. Click the pin to open the card again.
+5. On the phone, open the same URL. Tap the pin. Tap the card to flip it. Tap the X to close it.
 
 ### Slide 8. LAN backup. Minute 10 to 11.
 
@@ -231,18 +234,18 @@ Stop and ask for questions. If the class asks for a lookup we did not build, poi
 
 ## 6. Live deployed link
 
-The live page is [Render live link to be added]. The free instance sleeps, so open it a few minutes before the demo.
+The live page is https://address-card.onrender.com/. The free instance sleeps, so open it a few minutes before the demo.
 
 ## 7. Backlog
 
-These items are real later work. They are not part of the demo.
+These items are real later work. They are not part of the demo. The same list is on GitHub for Project Activity 4, at https://github.com/ichigokekiii/sys-ad/issues.
 
-- Look up an address a technician types.
-- Show the raw JSON for class discussion.
-- Compare two addresses.
-- Save a lookup to a CSV file.
-- Add more roast lines written by the class.
-- Look up IPv6 on the server when the host itself has IPv6.
+- Look up an address a technician types. https://github.com/ichigokekiii/sys-ad/issues/1
+- Show the raw JSON for class discussion. https://github.com/ichigokekiii/sys-ad/issues/2
+- Compare two addresses. https://github.com/ichigokekiii/sys-ad/issues/3
+- Save a lookup to a CSV file. https://github.com/ichigokekiii/sys-ad/issues/4
+- Add more roast lines written by the class. https://github.com/ichigokekiii/sys-ad/issues/5
+- Look up IPv6 on the server when the host itself has IPv6. https://github.com/ichigokekiii/sys-ad/issues/6
 
 The header lesson and the classmate compare sit with that later work. The plan calls them Activity 4 work. Browser location and a latency race are not on this list. We dropped them because they make a live demo fragile.
 

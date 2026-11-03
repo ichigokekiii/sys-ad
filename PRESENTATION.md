@@ -1,6 +1,6 @@
 # Address Card demo
 
-A 10 to 15 minute talk for a phone and a laptop. Speak from the page that is actually running. The repository is https://github.com/ichigokekiii/sys-ad. Render is still `[Render live link to be added]`. `REFLECTION.md` is a draft, so rewrite it before you read it aloud.
+A 10 to 15 minute talk for a phone and a laptop. Speak from the page that is actually running. The repository is https://github.com/ichigokekiii/sys-ad. Render is still `https://address-card.onrender.com/`. `REFLECTION.md` is a draft, so rewrite it before you read it aloud.
 
 ## Minutes
 
@@ -40,7 +40,7 @@ Open these files and say one job for each.
 
 ## Live demo
 
-Open `[Render live link to be added]` a few minutes early. The free instance sleeps.
+Open `https://address-card.onrender.com/` a few minutes early. The free instance sleeps.
 
 On the laptop, load the page. MapLibre and the OpenFreeMap Liberty style fill the screen. The map stays flat. Drag the map and zoom it. One pin marks the lookup. The page does not use an OpenStreetMap iframe.
 
