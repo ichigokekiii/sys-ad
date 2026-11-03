@@ -69,6 +69,26 @@ def test_get_shows_the_address_and_not_a_hidden_answer(monkeypatch):
     assert answer not in _hidden_values(raw)
 
 
+def test_places_route_returns_the_search(monkeypatch):
+    monkeypatch.setattr(
+        server,
+        "search_places",
+        lambda query: [
+            {
+                "name": "Quiapo",
+                "address": "Quiapo, Manila",
+                "latitude": 14.599,
+                "longitude": 120.984,
+            }
+        ]
+        if query == "Quiapo"
+        else [],
+    )
+    response = server.app.test_client().get("/places?q=Quiapo")
+    assert response.status_code == 200
+    assert response.get_json()[0]["name"] == "Quiapo"
+
+
 def test_post_quiz_with_the_right_choice_shows_the_grade(monkeypatch):
     response = _client(monkeypatch).post("/quiz", data={"choice": "PLDT"})
     assert response.status_code == 200

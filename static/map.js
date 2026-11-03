@@ -1,5 +1,5 @@
-// Flat on purpose. This map is not Mapbox, so it does not pitch or grow buildings.
-// The card is the piece that leans. The map only pans and zooms.
+// The camera can pitch. The tiles are OpenFreeMap Liberty, not Mapbox.
+// A searched place gets its own pin. The visitor pin stays on the lookup.
 (function () {
   var root = document.getElementById("map");
   if (!root) return;
@@ -23,38 +23,61 @@
   var map = new maplibregl.Map({
     container: root,
     style: "https://tiles.openfreemap.org/styles/liberty",
-    center: hasPin ? [lon, lat] : [121.0, 14.6],
-    zoom: hasPin ? 15 : 10,
-    pitch: 0,
-    bearing: 0,
-    maxPitch: 0,
-    pitchWithRotate: false,
-    dragRotate: false,
+    center: hasPin ? [lon, lat] : [120.9842, 14.5995],
+    zoom: hasPin ? 15 : 11,
+    pitch: 50,
+    bearing: -18,
+    maxPitch: 70,
+    pitchWithRotate: true,
+    dragRotate: true,
+    touchPitch: true,
     attributionControl: true,
   });
 
-  map.addControl(new maplibregl.NavigationControl(), "top-right");
+  map.addControl(new maplibregl.NavigationControl(), "bottom-right");
 
-  map.on("load", function () {
-    if (!hasPin) return;
-    // The lookup returns one place. A second pin would be a location we do not have.
-    var marker = new maplibregl.Marker({ color: "#e07a3d" })
-      .setLngLat([lon, lat])
-      .addTo(map);
+  function wire(marker, label, open) {
     var pin = marker.getElement();
     pin.style.cursor = "pointer";
     pin.setAttribute("role", "button");
     pin.setAttribute("tabindex", "0");
-    pin.setAttribute("aria-label", "Open the address card");
-    function openFromPin(event) {
+    pin.setAttribute("aria-label", label);
+    function activate(event) {
       event.stopPropagation();
-      document.dispatchEvent(new CustomEvent("addresscard:open"));
+      open();
     }
-    pin.addEventListener("click", openFromPin);
+    pin.addEventListener("click", activate);
     pin.addEventListener("keydown", function (event) {
       if (event.key !== "Enter" && event.key !== " ") return;
-      openFromPin(event);
+      activate(event);
     });
+  }
+
+  var placeMarker = null;
+
+  map.on("load", function () {
+    if (!hasPin) return;
+    var marker = new maplibregl.Marker({ color: "#e07a3d" })
+      .setLngLat([lon, lat])
+      .addTo(map);
+    wire(marker, "Open your address card", function () {
+      document.dispatchEvent(new CustomEvent("addresscard:open"));
+    });
+  });
+
+  document.addEventListener("addresscard:place", function (event) {
+    var place = event.detail;
+    if (!place) return;
+    var point = [place.longitude, place.latitude];
+    if (!placeMarker) {
+      placeMarker = new maplibregl.Marker({ color: "#1d4ed8" });
+      wire(placeMarker, "Open this place", function () {
+        document.dispatchEvent(new CustomEvent("addresscard:place", { detail: placeMarker._place }));
+      });
+    }
+    placeMarker._place = place;
+    placeMarker.setLngLat(point).addTo(map);
+    map.flyTo({ center: point, zoom: 16, pitch: 55, bearing: -18 });
   });
 
   map.on("error", function () {

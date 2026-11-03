@@ -2,23 +2,79 @@
 // Tilt follows a mouse. A click on the card turns it over.
 (function () {
   var modal = document.getElementById("modal");
-  var reopen = document.getElementById("reopen");
   var closeBtn = document.getElementById("close-card");
   var tilt = document.getElementById("card-tilt");
   var flip = document.getElementById("card-flip");
   var glare = document.getElementById("glare");
-  if (!modal || !reopen || !closeBtn || !tilt || !flip) return;
+  var front = document.querySelector(".face.front");
+  if (!modal || !closeBtn || !tilt || !flip || !front) return;
+
+  var title = document.getElementById("card-title");
+  var meta = document.getElementById("card-meta");
+  var statA = document.getElementById("stat-a");
+  var statB = document.getElementById("stat-b");
+  var statC = document.getElementById("stat-c");
+  var labelA = document.getElementById("stat-a-label");
+  var labelB = document.getElementById("stat-b-label");
+  var labelC = document.getElementById("stat-c-label");
+  var v6Label = document.getElementById("v6-label");
+  var badge = document.getElementById("ipv6-badge");
+  var backLat = document.getElementById("back-lat");
+  var backLon = document.getElementById("back-lon");
+  var network = {
+    title: title.textContent,
+    meta: meta.textContent,
+    a: statA.textContent,
+    b: statB.textContent,
+    c: statC.textContent,
+    labelA: labelA.textContent,
+    labelB: labelB.textContent,
+    labelC: labelC.textContent,
+    v6: v6Label.textContent,
+    lat: backLat.textContent,
+    lon: backLon.textContent,
+  };
 
   function openCard() {
     modal.hidden = false;
-    reopen.hidden = true;
-    closeBtn.focus();
   }
 
   function closeCard() {
     modal.hidden = true;
-    reopen.hidden = false;
-    reopen.focus();
+  }
+
+  function showNetwork() {
+    front.classList.remove("is-place");
+    title.textContent = network.title;
+    meta.textContent = network.meta;
+    statA.textContent = network.a;
+    statB.textContent = network.b;
+    statC.textContent = network.c;
+    labelA.textContent = network.labelA;
+    labelB.textContent = network.labelB;
+    labelC.textContent = network.labelC;
+    v6Label.textContent = network.v6;
+    badge.textContent = badge.dataset.connection || badge.textContent;
+    backLat.textContent = network.lat;
+    backLon.textContent = network.lon;
+  }
+
+  function showPlace(place) {
+    front.classList.add("is-place");
+    title.textContent = place.name;
+    meta.textContent = place.address;
+    statA.textContent = Number(place.latitude).toFixed(5);
+    statB.textContent = Number(place.longitude).toFixed(5);
+    statC.textContent = "None";
+    labelA.textContent = "Latitude";
+    labelB.textContent = "Longitude";
+    labelC.textContent = "Public IP";
+    v6Label.textContent = "This connection";
+    badge.textContent = badge.dataset.connection || badge.textContent;
+    backLat.textContent = statA.textContent;
+    backLon.textContent = statB.textContent;
+    flip.classList.remove("is-flipped");
+    flip.setAttribute("aria-pressed", "false");
   }
 
   closeBtn.addEventListener("click", function (event) {
@@ -28,8 +84,15 @@
   modal.addEventListener("click", function (event) {
     if (event.target === modal) closeCard();
   });
-  document.addEventListener("addresscard:open", openCard);
-  reopen.addEventListener("click", openCard);
+  document.addEventListener("addresscard:open", function () {
+    showNetwork();
+    openCard();
+  });
+  document.addEventListener("addresscard:place", function (event) {
+    if (!event.detail) return;
+    showPlace(event.detail);
+    openCard();
+  });
 
   document.addEventListener("keydown", function (event) {
     if (event.key === "Escape" && !modal.hidden) closeCard();

@@ -6,10 +6,11 @@ modules so this file only reads the request and fills the template.
 
 import os
 
-from flask import Flask, render_template, request
+from flask import Flask, jsonify, render_template, request
 
 from fun import grade, map_embed, quiz_for, roast
 from ipinfo import current_mode, lookup, resolve_query_ip
+from places import search_places
 
 app = Flask(__name__)
 
@@ -42,6 +43,11 @@ def _render(card, quiz, quiz_result):
 def index():
     card, quiz = _card_and_quiz()
     return _render(card, quiz, None)
+
+
+@app.get("/places")
+def places():
+    return jsonify(search_places(request.args.get("q", "")))
 
 
 @app.post("/quiz")

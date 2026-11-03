@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.1/dist/maplibre-gl.css" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=6">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=7">
 </head>
 <body>
   <div
@@ -17,7 +17,16 @@
     data-lon="{{ card.longitude if card.longitude is not none else '' }}"
   ></div>
 
-  <button type="button" id="reopen" {% if quiz_result %}hidden{% endif %}>Address card</button>
+  <form id="place-search" role="search">
+    <label class="search-field">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <path d="M16 16l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+      </svg>
+      <input id="place-query" type="search" name="q" placeholder="Search Metro Manila" autocomplete="off" enterkeyhint="search">
+    </label>
+    <ul id="place-results" hidden></ul>
+  </form>
 
   <div id="modal" {% if not quiz_result %}hidden{% endif %} role="dialog" aria-labelledby="card-title">
     <div class="modal-stack">
@@ -33,7 +42,7 @@
                 <p class="stamp">{{ card.country_code or "??" }}</p>
                 <div>
                   <p class="kit-name" id="card-title">{{ place_name }}</p>
-                  <p class="kit-meta">{{ card.country or "Unknown country" }} | {{ card.isp or "Unknown provider" }}</p>
+                  <p class="kit-meta" id="card-meta">{{ card.country or "Unknown country" }} | {{ card.isp or "Unknown provider" }}</p>
                 </div>
               </div>
               {% if notice %}
@@ -44,18 +53,18 @@
               {% endif %}
               <div class="kit-foot">
                 <div class="stat">
-                  <strong>{{ card.ipv4 or "None" }}</strong>
-                  <span>IPv4</span>
+                  <strong id="stat-a">{{ card.ipv4 or "None" }}</strong>
+                  <span id="stat-a-label">IPv4</span>
                 </div>
                 <div class="stat">
-                  <strong>{{ card.asn or "Unknown" }}</strong>
-                  <span>ASN</span>
+                  <strong id="stat-b">{{ card.asn or "Unknown" }}</strong>
+                  <span id="stat-b-label">ASN</span>
                 </div>
                 <div class="stat">
-                  <strong>None</strong>
-                  <span>MAC</span>
+                  <strong id="stat-c">None</strong>
+                  <span id="stat-c-label">MAC</span>
                 </div>
-                <p class="v6"><span>IPv6</span> <span id="ipv6-badge">Checking IPv6</span></p>
+                <p class="v6"><span id="v6-label">IPv6</span> <span id="ipv6-badge">Checking IPv6</span></p>
                 <div class="meter" role="img" aria-label="Lookup source {{ card.source }}">
                   <span class="meter-fill"></span>
                 </div>
@@ -63,16 +72,17 @@
               </div>
             </article>
             <article class="face back">
+              <div class="face-scroll">
               <p class="kicker">The internet's guess</p>
               <p class="roast">{{ roast }}</p>
               <div class="pair">
                 <div>
                   <span>Latitude</span>
-                  <strong>{{ card.latitude if card.latitude is not none else "Unknown" }}</strong>
+                  <strong id="back-lat">{{ card.latitude if card.latitude is not none else "Unknown" }}</strong>
                 </div>
                 <div>
                   <span>Longitude</span>
-                  <strong>{{ card.longitude if card.longitude is not none else "Unknown" }}</strong>
+                  <strong id="back-lon">{{ card.longitude if card.longitude is not none else "Unknown" }}</strong>
                 </div>
               </div>
               <p class="quiet">Source {{ card.source }}</p>
@@ -93,6 +103,7 @@
               {% if quiz_result %}
               <p class="grade">{{ quiz_result }}</p>
               {% endif %}
+              </div>
             </article>
             <div id="glare" aria-hidden="true"></div>
           </div>
@@ -103,8 +114,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.1/dist/maplibre-gl.js"></script>
-  <script src="{{ url_for('static', filename='map.js') }}?v=4"></script>
-  <script src="{{ url_for('static', filename='card.js') }}?v=6"></script>
+  <script src="{{ url_for('static', filename='map.js') }}?v=7"></script>
+  <script src="{{ url_for('static', filename='card.js') }}?v=7"></script>
+  <script src="{{ url_for('static', filename='search.js') }}?v=7"></script>
   <script>
     fetch("https://api6.ipify.org?format=json")
       .then(function (response) {
@@ -113,12 +125,18 @@
       })
       .then(function (data) {
         var badge = document.getElementById("ipv6-badge");
-        badge.textContent = data && data.ip ? data.ip : "No IPv6 yet";
+        badge.dataset.connection = data && data.ip ? data.ip : "No IPv6 yet";
+        if (!document.querySelector(".face.front").classList.contains("is-place")) {
+          badge.textContent = badge.dataset.connection;
+        }
         badge.classList.add("is-on");
       })
       .catch(function () {
         var badge = document.getElementById("ipv6-badge");
-        badge.textContent = "No IPv6 yet";
+        badge.dataset.connection = "No IPv6 yet";
+        if (!document.querySelector(".face.front").classList.contains("is-place")) {
+          badge.textContent = "No IPv6 yet";
+        }
         badge.classList.add("is-off");
       });
   </script>

@@ -2,7 +2,7 @@
 
 DEVASC Project Activity 3. This repository is the Option 2 app, a phone and laptop demo of one public address card.
 
-The remote is `[GitHub repository link]` until the repository exists. The live page is `[Render live link to be added]`.
+The repository is https://github.com/ichigokekiii/sys-ad. The live page is `[Render live link to be added]`.
 
 ## Option 2
 
@@ -21,11 +21,11 @@ The roast is about the network. Branch names and review rules are in `CONTRIBUTI
 
 `GET /` asks for one lookup and renders `templates/index.html`.
 
-MapLibre and the OpenFreeMap Liberty style fill the viewport. The map stays flat. This app is not using Mapbox, so the visitor can drag and zoom, and the view does not pitch. On a wide window the card sits on the left and the pin stays in the open map. A marker sits on the lookup coordinates. The style needs no API key. The page does not use an OpenStreetMap iframe. When the lookup has no coordinates, the map opens on a wide view and draws no marker.
+MapLibre and the OpenFreeMap Liberty style fill the viewport. The camera can pitch. The visitor can drag, zoom, and tilt. A marker sits on the lookup coordinates. The style needs no API key. The page does not use an OpenStreetMap iframe. When the lookup has no coordinates, the map opens on Metro Manila and draws no marker.
 
-The card is a modal on that map. On a laptop, a mouse tilts the card. A click flips it. The X closes it. **Address card** opens it again. The quiz is on the back. There is no control labeled "Turn the card".
+The search box finds a place inside Metro Manila and drops a second pin there. A place has a name and coordinates. It does not have one public IP, so that row says None. The network rows stay this connection.
 
-On a phone, a tap flips the card. A tap on the X closes it. The card sits along the bottom. Dragging does not tilt the card.
+The card opens in the center when a pin is clicked. A click flips it. The quiz on the back scrolls inside the card. The close control sits in the corner of the screen. There is no control labeled "Turn the card".
 
 `POST /quiz` looks the address up again, rebuilds the quiz from the ISP name, and grades the posted choice. The same ISP always rebuilds the same three choices. There is no session and no database. The quiz answer is not written into the HTML as a hidden field.
 
