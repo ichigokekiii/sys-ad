@@ -183,7 +183,26 @@ input:focus-visible {
   cursor: pointer;
 }
 
-#card-flip.is-flipped { transform: rotateY(180deg); }
+/* A turned card drops the 3D layer so the back can scroll. */
+#card-tilt:has(#card-flip.is-flipped) {
+  transform: none;
+  transform-style: flat;
+}
+
+#card-flip.is-flipped {
+  transform: none;
+  transform-style: flat;
+}
+
+#card-flip.is-flipped .face.front {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#card-flip.is-flipped .face.back {
+  transform: none;
+  pointer-events: auto;
+}
 
 .face {
   display: flex;
@@ -210,16 +229,27 @@ input:focus-visible {
   inset: 0;
   transform: rotateY(180deg);
   overflow: hidden;
+  min-height: 0;
 }
 
 .face-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
   height: 100%;
-  overflow-y: auto;
+  overflow-y: scroll;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.7) transparent;
 }
 
-.is-place .jersey { visibility: hidden; }
+.face-scroll::-webkit-scrollbar { width: 8px; }
+
+.face-scroll::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.7);
+}
 
 #glare {
   position: absolute;
@@ -259,6 +289,8 @@ input:focus-visible {
   gap: 10px;
 }
 
+.kit-id > div { min-width: 0; }
+
 .kit-name {
   margin: 0;
   font-size: 22px;
@@ -272,6 +304,9 @@ input:focus-visible {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .stamp {

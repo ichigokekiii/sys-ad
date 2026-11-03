@@ -77,7 +77,19 @@
     }
     placeMarker._place = place;
     placeMarker.setLngLat(point).addTo(map);
-    map.flyTo({ center: point, zoom: 16, pitch: 55, bearing: -18 });
+    // The card covers the map center, so the pin sits in the gap above it.
+    requestAnimationFrame(function () {
+      var frame = document.querySelector(".modal-frame");
+      var top = frame ? frame.getBoundingClientRect().top : 160;
+      var shift = window.innerHeight / 2 - Math.max(top, 80) / 2;
+      map.flyTo({
+        center: point,
+        zoom: 16,
+        pitch: 55,
+        bearing: -18,
+        padding: { bottom: Math.max(0, shift * 2) },
+      });
+    });
   });
 
   map.on("error", function () {

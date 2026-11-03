@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.1/dist/maplibre-gl.css" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=7">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=11">
 </head>
 <body>
   <div
@@ -85,6 +85,7 @@
                   <strong id="back-lon">{{ card.longitude if card.longitude is not none else "Unknown" }}</strong>
                 </div>
               </div>
+              <p class="quiet" id="back-where" hidden></p>
               <p class="quiet">Source {{ card.source }}</p>
               {% if quiz.choices %}
               <form action="/quiz" method="post">
@@ -114,8 +115,8 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.1/dist/maplibre-gl.js"></script>
-  <script src="{{ url_for('static', filename='map.js') }}?v=7"></script>
-  <script src="{{ url_for('static', filename='card.js') }}?v=7"></script>
+  <script src="{{ url_for('static', filename='map.js') }}?v=11"></script>
+  <script src="{{ url_for('static', filename='card.js') }}?v=11"></script>
   <script src="{{ url_for('static', filename='search.js') }}?v=7"></script>
   <script>
     fetch("https://api6.ipify.org?format=json")
@@ -126,17 +127,13 @@
       .then(function (data) {
         var badge = document.getElementById("ipv6-badge");
         badge.dataset.connection = data && data.ip ? data.ip : "No IPv6 yet";
-        if (!document.querySelector(".face.front").classList.contains("is-place")) {
-          badge.textContent = badge.dataset.connection;
-        }
+        badge.textContent = badge.dataset.connection;
         badge.classList.add("is-on");
       })
       .catch(function () {
         var badge = document.getElementById("ipv6-badge");
         badge.dataset.connection = "No IPv6 yet";
-        if (!document.querySelector(".face.front").classList.contains("is-place")) {
-          badge.textContent = "No IPv6 yet";
-        }
+        badge.textContent = "No IPv6 yet";
         badge.classList.add("is-off");
       });
   </script>

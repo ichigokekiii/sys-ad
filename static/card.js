@@ -21,6 +21,7 @@
   var badge = document.getElementById("ipv6-badge");
   var backLat = document.getElementById("back-lat");
   var backLon = document.getElementById("back-lon");
+  var backWhere = document.getElementById("back-where");
   var network = {
     title: title.textContent,
     meta: meta.textContent,
@@ -44,9 +45,9 @@
   }
 
   function showNetwork() {
-    front.classList.remove("is-place");
     title.textContent = network.title;
     meta.textContent = network.meta;
+    meta.removeAttribute("title");
     statA.textContent = network.a;
     statB.textContent = network.b;
     statC.textContent = network.c;
@@ -57,22 +58,22 @@
     badge.textContent = badge.dataset.connection || badge.textContent;
     backLat.textContent = network.lat;
     backLon.textContent = network.lon;
+    if (backWhere) {
+      backWhere.hidden = true;
+      backWhere.textContent = "";
+    }
   }
 
   function showPlace(place) {
-    front.classList.add("is-place");
     title.textContent = place.name;
     meta.textContent = place.address;
-    statA.textContent = Number(place.latitude).toFixed(5);
-    statB.textContent = Number(place.longitude).toFixed(5);
-    statC.textContent = "None";
-    labelA.textContent = "Latitude";
-    labelB.textContent = "Longitude";
-    labelC.textContent = "Public IP";
-    v6Label.textContent = "This connection";
-    badge.textContent = badge.dataset.connection || badge.textContent;
-    backLat.textContent = statA.textContent;
-    backLon.textContent = statB.textContent;
+    meta.title = place.address;
+    backLat.textContent = Number(place.latitude).toFixed(5);
+    backLon.textContent = Number(place.longitude).toFixed(5);
+    if (backWhere) {
+      backWhere.hidden = false;
+      backWhere.textContent = place.address;
+    }
     flip.classList.remove("is-flipped");
     flip.setAttribute("aria-pressed", "false");
   }
