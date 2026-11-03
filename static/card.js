@@ -219,5 +219,9 @@
     tilt.classList.remove("is-lit");
     tilt.style.setProperty("--rx", "0deg");
     tilt.style.setProperty("--ry", "0deg");
+    if (glare) {
+      glare.style.setProperty("--gx", "50%");
+      glare.style.setProperty("--gy", "18%");
+    }
   });
 })();

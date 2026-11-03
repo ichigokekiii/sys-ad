@@ -245,9 +245,9 @@ input:focus-visible {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   background: radial-gradient(
-    ellipse 18% 14% at var(--gx, 50%) var(--gy, 18%),
-    rgba(255, 255, 255, 0.42),
-    transparent 70%
+    circle at var(--gx, 50%) var(--gy, 18%),
+    rgba(255, 255, 255, 0.55),
+    transparent 42%
   );
   transition: opacity 0.12s linear;
 }
