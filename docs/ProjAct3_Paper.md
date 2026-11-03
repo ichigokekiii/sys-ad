@@ -16,20 +16,18 @@ November 2026
 
 We chose Option 2. The activity asks for a prototype that shows public IP addressing to network technicians. Option 2 is a new application, so we can shape the page around the address, the ISP, the ASN, and the country code. Option 1 would add features to a directions script. This class needs the address story.
 
-Social coding means the work is shared in Git. Each change reaches main through a pull request with one reviewer. We still have to create the GitHub repository. Until then, the link in section 4 stays a placeholder.
+Social coding means the work is shared in Git. Each change reaches main through a pull request with one reviewer. The repository is https://github.com/ichigokekiii/sys-ad. The pull requests in section 4 are not open yet.
 
 Address Card is the page for the demo. It is one Flask page. The map fills the screen, and the address card is a modal over that map. The same page is what we open on a phone and on a laptop.
 
 The page has four features.
 
-- A map that fills the screen. MapLibre draws it with the OpenFreeMap Liberty style. The map stays flat, because this app is not using Mapbox. On a laptop the card sits on the left and the pin stays in the open map. The map needs no API key.
-- A modal address card. The front holds the public address, the ISP, the ASN, the country code, the city, and the IPv6 line. The back holds the roast, the coordinates, the API name, and the one ISP question. The map stays draggable while the card is open.
+- A map that fills the screen. MapLibre draws it with the OpenFreeMap Liberty style. The map stays flat, because this app is not using Mapbox. One pin marks the lookup. A click on that pin opens the card. The map needs no API key.
+- A centered address card. A gray layer covers the map while the card is open. The X sits on that gray, outside the card. The front lists IPv4, IPv6, the ISP, the ASN, the place, and MAC. MAC reads "Not available", because a website cannot see a device MAC address. The back holds the roast, the coordinates, the API name, and the one ISP question.
 - An IPv6 line on the front. The browser fetches `https://api6.ipify.org?format=json`. The line reads "Checking IPv6" until the fetch returns. Failure says "No IPv6 yet".
 - One roast and one ISP question. Both sit on the back of the card. The roast is one line about the ISP or the country.
 
-On a laptop, the card tilts toward the mouse. A click on the card flips it. The X closes the card. A control labeled "Address card" opens it again.
-
-On a phone, a tap flips the card. The X closes it. The card sits along the bottom. The phone does not tilt with a drag.
+On a laptop and on a phone, the visitor clicks the pin. The card opens in the center. A click on the card flips it. The X on the gray layer closes it. A control labeled "Address card" opens it again when the map has no pin.
 
 When the visitor asks for reduced motion, or when scripting is off, the card stays flat. Both faces are already in the HTML.
 
@@ -53,7 +51,7 @@ The activity deliverables are these.
 
 - Address Card, the Flask page, with `app.py`, `ipinfo.py`, `fun.py`, `templates/index.html`, `static/map.js`, and `static/card.js`.
 - This paper.
-- The GitHub repository at [GitHub repository link], with the branches in section 4.
+- The GitHub repository at https://github.com/ichigokekiii/sys-ad. The branches in section 4 are the plan. Those pull requests are not open yet.
 - The Render page at [Render live link to be added], plus a LAN backup on John's PC.
 - A talk of 10 to 15 minutes, with a live demo on a phone and on a laptop.
 
@@ -104,22 +102,13 @@ Check-ins. [team to describe check-ins]
 
 ## 4. Using GitHub
 
-The repository link is [GitHub repository link]. That text is a placeholder. The remote does not exist yet, so this paper has no pull request number and no real URL.
+The repository is https://github.com/ichigokekiii/sys-ad. `main` is already on that remote. Collaborator invites and pull requests are not done. The usernames stay [Luis GitHub username] and [Emanuel GitHub username] until the team writes the real ones. Pull request numbers stay [PR number].
 
-John creates an empty repository on GitHub, because he is the Scrum leader and PM. He leaves GitHub's optional README, license, and `.gitignore` unchecked. An empty repo lets the first push land without a merge. He then invites [Luis GitHub username] and [Emanuel GitHub username] as collaborators.
-
-From the project folder, John connects the local files and pushes `main`.
+John invites those two collaborators. Luis and Emanuel clone the repository that already exists.
 
 ```
-git init
-git add .
-git commit -m "Start Address Card"
-git branch -M main
-git remote add origin [GitHub repository link]
-git push -u origin main
+git clone https://github.com/ichigokekiii/sys-ad.git
 ```
-
-The remote line above is not a working URL. Paste the https address GitHub shows, in place of [GitHub repository link], before running it. Luis and Emanuel clone that same URL after the push.
 
 Four branches will exist. Each pull request has one reviewer. The author of a branch does not approve that same branch. John is the reviewer on `emanuel/api` and on `luis/tests`. Each of those pull requests still has one reviewer.
 
@@ -181,9 +170,9 @@ The slide says Option 2. The speaker gives the reason from section 1. The class 
 
 The slide lists the four features we are shipping.
 
-- The map fills the screen. MapLibre draws it with the OpenFreeMap Liberty style. The map stays flat, because this app is not using Mapbox. On a laptop the card sits on the left and the pin stays in the open map. The map needs no API key.
-- The address card is a modal over the map. On a laptop the card tilts toward the mouse. A click on the card flips it. On a phone a tap flips the card. The card sits along the bottom. The phone does not tilt with a drag.
-- The front holds the public address, the ISP, the ASN, the country code, the city, and the IPv6 line. Failure says "No IPv6 yet".
+- The map fills the screen. MapLibre draws it with the OpenFreeMap Liberty style. The map stays flat, because this app is not using Mapbox. One pin marks the lookup. A click on that pin opens the card. The map needs no API key.
+- The address card opens in the center, on a gray layer. The X sits on that gray, outside the card. A click on the card flips it. The phone uses the same card.
+- The front lists IPv4, IPv6, the ISP, the ASN, the place, and MAC. MAC reads "Not available". Failure on the IPv6 fetch says "No IPv6 yet".
 - The back holds the roast, the coordinates, the API name, and the one ISP question.
 
 ### Slide 4. Why these features. Minute 3 to 4.
@@ -202,17 +191,17 @@ The speaker names six files and what each one owns.
 - `ipinfo.py` parses the forwarding header and the provider JSON. It owns the timeout and the fallback order.
 - `fun.py` owns the roast lines, the ISP question, the grading, and `map_embed`. The tests call `map_embed`. The page does not show that iframe. Those functions are pure. The tests in sprint 3 can call them without a browser.
 - `templates/index.html` holds the map container, both faces of the card, and the ISP question on the back. Both faces stay in the page when scripting is off. The IPv6 fetch is a few lines in this file.
-- `static/map.js` starts MapLibre with the OpenFreeMap Liberty style. It places a pin on the lookup coordinates. It loads no API key.
-- `static/card.js` tilts the card toward the mouse on a laptop. A click or a tap flips the card. The X closes the card. The control labeled "Address card" opens it again. The map stays draggable while the card is open.
+- `static/map.js` starts MapLibre with the OpenFreeMap Liberty style. It places one pin on the lookup coordinates. A click on that pin opens the card. It loads no API key.
+- `static/card.js` opens the card, flips it, and closes it. The X sits outside the card. The control labeled "Address card" opens the card when the map has no pin.
 
 ### Slide 7. Live demo on the phone and the laptop. Minute 7 to 10.
 
 Open the Render URL a few minutes early. Section 6 says why. Then follow this order.
 
-1. On the laptop, drag and zoom the flat map. The card sits on the left. Then read the front of the card.
-2. Move the pointer so the card leans. Click the card. Read the roast and the coordinates. Then answer the ISP question.
-3. Click the X. The map remains. Click "Address card" to open it again.
-4. On the phone, open the same URL. Tap the card to flip it. Tap the X to close it.
+1. On the laptop, drag and zoom the flat map. Click the pin. The card opens in the center on a gray layer. Read IPv4, IPv6, the ISP, the ASN, the place, and the MAC line.
+2. Click the card. Read the roast and the coordinates. Then answer the ISP question.
+3. Click the X on the gray layer. The map remains. Click the pin to open the card again.
+4. On the phone, open the same URL. Tap the pin. Tap the card to flip it. Tap the X to close it.
 
 ### Slide 8. LAN backup. Minute 10 to 11.
 
@@ -226,7 +215,7 @@ Direct mode asks ipwho.is for the server's public address. That address is the h
 
 ### Slide 9. GitHub workflow. Minute 11 to 12.
 
-The slide shows [GitHub repository link] and the four branch names. The speaker says we create the remote first. We invite [Luis GitHub username] and [Emanuel GitHub username]. We merge to `main` only after the one assigned reviewer approves. Pull request numbers stay [PR number] until GitHub assigns them. The full command list is section 4.
+The slide shows https://github.com/ichigokekiii/sys-ad and the four branch names. The speaker says `main` is already on that remote. We still invite [Luis GitHub username] and [Emanuel GitHub username]. We merge to `main` only after the one assigned reviewer approves. Pull request numbers stay [PR number] until GitHub assigns them. The full command list is section 4.
 
 ### Slide 10. Backlog. Minute 12 to 13.
 

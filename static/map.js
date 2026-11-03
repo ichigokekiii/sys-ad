@@ -20,7 +20,6 @@
   var lon = parseFloat(root.dataset.lon);
   var hasPin = Number.isFinite(lat) && Number.isFinite(lon);
 
-  var desktop = window.matchMedia("(min-width: 1100px)").matches;
   var map = new maplibregl.Map({
     container: root,
     style: "https://tiles.openfreemap.org/styles/liberty",
@@ -32,16 +31,30 @@
     pitchWithRotate: false,
     dragRotate: false,
     attributionControl: true,
-    padding: desktop ? { left: 480, top: 40, right: 40, bottom: 40 } : { bottom: 220 },
   });
 
   map.addControl(new maplibregl.NavigationControl(), "top-right");
 
   map.on("load", function () {
     if (!hasPin) return;
-    new maplibregl.Marker({ color: "#e07a3d" })
+    // The lookup returns one place. A second pin would be a location we do not have.
+    var marker = new maplibregl.Marker({ color: "#e07a3d" })
       .setLngLat([lon, lat])
       .addTo(map);
+    var pin = marker.getElement();
+    pin.style.cursor = "pointer";
+    pin.setAttribute("role", "button");
+    pin.setAttribute("tabindex", "0");
+    pin.setAttribute("aria-label", "Open the address card");
+    function openFromPin(event) {
+      event.stopPropagation();
+      document.dispatchEvent(new CustomEvent("addresscard:open"));
+    }
+    pin.addEventListener("click", openFromPin);
+    pin.addEventListener("keydown", function (event) {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      openFromPin(event);
+    });
   });
 
   map.on("error", function () {

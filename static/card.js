@@ -1,5 +1,5 @@
-// The card is a floating dialog. The map underneath stays draggable.
-// Tilt follows a mouse. A click turns the card over. The X puts it away.
+// A pin opens the card. The gray layer is the dialog. The X sits outside the card.
+// Tilt follows a mouse. A click on the card turns it over.
 (function () {
   var modal = document.getElementById("modal");
   var reopen = document.getElementById("reopen");
@@ -25,6 +25,10 @@
     event.stopPropagation();
     closeCard();
   });
+  modal.addEventListener("click", function (event) {
+    if (event.target === modal) closeCard();
+  });
+  document.addEventListener("addresscard:open", openCard);
   reopen.addEventListener("click", openCard);
 
   document.addEventListener("keydown", function (event) {
@@ -64,6 +68,7 @@
       frame = 0;
       tilt.style.setProperty("--rx", rx.toFixed(2) + "deg");
       tilt.style.setProperty("--ry", ry.toFixed(2) + "deg");
+      tilt.classList.add("is-lit");
       if (glare) {
         glare.style.setProperty("--gx", (px * 100).toFixed(1) + "%");
         glare.style.setProperty("--gy", (py * 100).toFixed(1) + "%");
@@ -72,6 +77,7 @@
   });
 
   tilt.addEventListener("pointerleave", function () {
+    tilt.classList.remove("is-lit");
     tilt.style.setProperty("--rx", "0deg");
     tilt.style.setProperty("--ry", "0deg");
     if (glare) {

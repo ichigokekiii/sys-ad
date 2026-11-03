@@ -1,6 +1,6 @@
 # Address Card demo
 
-A 10 to 15 minute talk for a phone and a laptop. Speak from the page that is actually running. `REFLECTION.md` is a draft, so rewrite it before you read it aloud.
+A 10 to 15 minute talk for a phone and a laptop. Speak from the page that is actually running. The repository is https://github.com/ichigokekiii/sys-ad. Render is still `[Render live link to be added]`. `REFLECTION.md` is a draft, so rewrite it before you read it aloud.
 
 ## Minutes
 
@@ -23,8 +23,8 @@ The four picks are the ones that demo well, need no API key, and still work when
 Walk through the four features on the live page. The map fills the viewport. The card is a modal on that map.
 
 1. The profile card. The front is the credential. The back is the roast, the coordinates, and the quiz.
-2. The map pin. MapLibre and the OpenFreeMap Liberty style fill the screen. The map stays flat, because this app is not using Mapbox. The visitor can drag and zoom. On a laptop the card sits on the left and the pin stays in the open map. A marker sits on the lookup coordinates. No API key is required. The page does not use an OpenStreetMap iframe. The pin is often the ISP equipment, not the house.
-3. The IPv6 badge. It shows an address, or "No IPv6 yet".
+2. The map pin. MapLibre and the OpenFreeMap Liberty style fill the screen. The map stays flat, because this app is not using Mapbox. The visitor can drag and zoom. One pin marks the lookup. A click on that pin opens the card. No API key is required. The page does not use an OpenStreetMap iframe. The pin is often the ISP equipment, not the house.
+3. The IPv6 row. It shows an address, or "No IPv6 yet". The IPv4 row says "None on this lookup" when the lookup has no IPv4 address. MAC says "Not available".
 4. One roast line and one ISP question. The roast is about the network. The quiz is on the back of the card.
 
 ## Files to open
@@ -35,24 +35,24 @@ Open these files and say one job for each.
 - `ipinfo.py` parses `X-Forwarded-For` and calls the providers.
 - `fun.py` builds the roast, the quiz, the grade, and `map_embed`. `map_embed` still returns an OpenStreetMap URL. `tests/test_fun.py` checks that helper. The page does not load it.
 - `templates/index.html` is the page. The script in that file fetches `https://api6.ipify.org?format=json`.
-- `static/map.js` starts the MapLibre map with the OpenFreeMap Liberty style.
-- `static/card.js` tilts the card on a laptop, flips it, and closes it.
+- `static/map.js` starts the flat MapLibre map and opens the card from the pin.
+- `static/card.js` opens the card, flips it, and closes it. The X sits outside the card.
 
 ## Live demo
 
 Open `[Render live link to be added]` a few minutes early. The free instance sleeps.
 
-On the laptop, load the page. MapLibre and the OpenFreeMap Liberty style fill the screen. The map stays flat. Drag the map and zoom it. The card sits on the left. A marker sits in the open map. The page does not use an OpenStreetMap iframe.
+On the laptop, load the page. MapLibre and the OpenFreeMap Liberty style fill the screen. The map stays flat. Drag the map and zoom it. One pin marks the lookup. The page does not use an OpenStreetMap iframe.
 
-Read the public address, the ISP, the ASN, the country code, and the city on the card. Move the pointer across the card. The card tilts. Click the card. The back shows the roast, the coordinates, and the quiz. There is no control labeled "Turn the card".
+Click the pin. The card opens in the center. A gray layer covers the map. The X sits on that gray, outside the card. Read IPv4, IPv6, the ISP, the ASN, the place, and the MAC line. MAC says "Not available".
 
-Point at the IPv6 line. It starts as "Checking IPv6". The page fetches `https://api6.ipify.org?format=json`. The server does not make that call. If the call fails, the badge says "No IPv6 yet".
+The IPv6 row starts as "Checking IPv6". The page fetches `https://api6.ipify.org?format=json`. The server does not make that call. If the call fails, the row says "No IPv6 yet".
 
-Submit the real ISP on the quiz. The page says "That's the one."
+Click the card. The back shows the roast, the coordinates, and the quiz. Submit the real ISP. The page says "That's the one."
 
-Click the X. The card closes. Click **Address card**. The card opens again.
+Click the X. The card closes and the map is usable again. Click the pin to open the card again.
 
-On the phone, open the same URL. The card sits along the bottom. Tap the card to flip it. Tap the X to close it. Dragging does not tilt the card. Dragging moves the map.
+On the phone, open the same URL. Tap the pin. The same centered card opens. Tap the card to flip it. Tap the X to close it.
 
 For the hosted demo, `LOOKUP_MODE` is `forwarded`, or `RENDER` is true and `LOOKUP_MODE` is unset. The server then sees the forwarded address. That address is the first `X-Forwarded-For` entry. A missing header uses `request.remote_addr`.
 
