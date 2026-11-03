@@ -183,26 +183,11 @@ input:focus-visible {
   cursor: pointer;
 }
 
-/* A turned card drops the 3D layer so the back can scroll. */
-#card-tilt:has(#card-flip.is-flipped) {
-  transform: none;
-  transform-style: flat;
-}
+#card-flip.is-flipped { transform: rotateY(180deg); }
 
-#card-flip.is-flipped {
-  transform: none;
-  transform-style: flat;
-}
+#card-flip.is-flipped .face.front { pointer-events: none; }
 
-#card-flip.is-flipped .face.front {
-  visibility: hidden;
-  pointer-events: none;
-}
-
-#card-flip.is-flipped .face.back {
-  transform: none;
-  pointer-events: auto;
-}
+#card-flip.is-flipped .face.back { pointer-events: auto; }
 
 .face {
   display: flex;
@@ -260,9 +245,9 @@ input:focus-visible {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   background: radial-gradient(
-    circle at var(--gx, 50%) var(--gy, 18%),
-    rgba(255, 255, 255, 0.55),
-    transparent 42%
+    ellipse 18% 14% at var(--gx, 50%) var(--gy, 18%),
+    rgba(255, 255, 255, 0.42),
+    transparent 70%
   );
   transition: opacity 0.12s linear;
 }
@@ -452,6 +437,19 @@ label {
   cursor: pointer;
 }
 
+form label:has(input:checked) {
+  background: #fff;
+  color: #12306e;
+}
+
+form input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  flex: 0 0 auto;
+  accent-color: #12306e;
+}
+
 button[type="submit"] {
   min-height: 44px;
   margin-top: 6px;
@@ -463,7 +461,57 @@ button[type="submit"] {
   cursor: pointer;
 }
 
-.grade { margin: 0; font-weight: 600; }
+.verdict {
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  pointer-events: none;
+  text-align: center;
+}
+
+.verdict-word {
+  margin: 0;
+  color: #fff;
+  font: 700 72px/0.95 "Source Sans 3", sans-serif;
+  letter-spacing: -0.04em;
+  text-shadow: 0 10px 28px rgba(15, 23, 42, 0.55);
+}
+
+.verdict-detail {
+  margin: 12px 0 0;
+  max-width: 28ch;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-shadow: 0 6px 18px rgba(15, 23, 42, 0.5);
+}
+
+.verdict.is-wrong .verdict-word { animation: verdict-shake 0.5s ease; }
+
+.verdict.is-gone { opacity: 0; transition: opacity 0.45s ease; }
+
+@keyframes verdict-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-14px); }
+  40% { transform: translateX(14px); }
+  60% { transform: translateX(-8px); }
+  80% { transform: translateX(8px); }
+}
+
+#confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
 
 #close-card:active,
 #reopen:active,
@@ -483,5 +531,6 @@ button[type="submit"]:active { opacity: 0.82; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #card-tilt, #card-flip, #glare { transition: none; }
+  #card-tilt, #card-flip, #glare, .verdict { transition: none; }
+  .verdict.is-wrong .verdict-word { animation: none; }
 }

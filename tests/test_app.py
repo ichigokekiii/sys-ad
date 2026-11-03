@@ -92,4 +92,4 @@ def test_places_route_returns_the_search(monkeypatch):
 def test_post_quiz_with_the_right_choice_shows_the_grade(monkeypatch):
     response = _client(monkeypatch).post("/quiz", data={"choice": "PLDT"})
     assert response.status_code == 200
-    assert "That's the one." in unescape(response.get_data(as_text=True))
+    assert "Correct." in unescape(response.get_data(as_text=True))

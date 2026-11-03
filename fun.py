@@ -106,7 +106,7 @@ def grade(quiz, choice) -> str:
     if quiz.answer is None:
         return NO_PROVIDER
     if choice == quiz.answer:
-        return "That's the one."
+        return "Correct."
     return f"Close. This network is {quiz.answer}."
 
 

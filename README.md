@@ -40,7 +40,7 @@ Each call times out after 4 seconds. A provider can return HTTP 200 and still co
 
 When an address was known and the location lookup fails, the notice is "The location lookup is taking a break. The address below is still yours." When no public address can be found, the notice is "We could not find a public address right now. Refresh in a moment."
 
-The right quiz choice grades as "That's the one." A wrong choice grades as "Close. This network is {isp}." When the ISP is missing, the prompt is "The provider did not come back, so there is no guess this round."
+The right quiz choice grades as "Correct." A wrong choice grades as "Close. This network is {isp}." When the ISP is missing, the prompt is "The provider did not come back, so there is no guess this round."
 
 The page fetches `https://api6.ipify.org?format=json` for the IPv6 badge. That call stays in the browser. The badge starts as "Checking IPv6". If the call fails, the badge says "No IPv6 yet". The server does not put IPv6 in the template context.
 

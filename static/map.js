@@ -55,7 +55,20 @@
 
   var placeMarker = null;
 
+  var revealPin = false;
+
+  function showVisitorPin() {
+    if (!revealPin || !hasPin || !map.loaded()) return;
+    map.flyTo({ center: [lon, lat], zoom: 15, pitch: 50, bearing: -18 });
+  }
+
+  document.addEventListener("addresscard:reveal-pin", function () {
+    revealPin = true;
+    showVisitorPin();
+  });
+
   map.on("load", function () {
+    showVisitorPin();
     if (!hasPin) return;
     var marker = new maplibregl.Marker({ color: "#e07a3d" })
       .setLngLat([lon, lat])

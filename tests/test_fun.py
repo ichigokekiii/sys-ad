@@ -34,7 +34,7 @@ def test_quiz_without_an_isp_has_no_choices():
 
 def test_grade_names_the_right_and_wrong_outcome():
     quiz = quiz_for("PLDT")
-    assert grade(quiz, "PLDT") == "That's the one."
+    assert grade(quiz, "PLDT") == "Correct."
     wrong = next(choice for choice in quiz.choices if choice != "PLDT")
     assert grade(quiz, wrong) == "Close. This network is PLDT."
 

@@ -109,6 +109,81 @@
     toggleFlip();
   });
 
+  var scroller = document.querySelector(".face-scroll");
+  flip.addEventListener("wheel", function (event) {
+    if (!flip.classList.contains("is-flipped") || !scroller) return;
+    scroller.scrollTop += event.deltaY;
+    event.preventDefault();
+  }, { passive: false });
+
+  var touchY = 0;
+  flip.addEventListener("touchstart", function (event) {
+    if (!event.touches.length) return;
+    touchY = event.touches[0].clientY;
+  }, { passive: true });
+  flip.addEventListener("touchmove", function (event) {
+    if (!flip.classList.contains("is-flipped") || !scroller || !event.touches.length) return;
+    var y = event.touches[0].clientY;
+    scroller.scrollTop += touchY - y;
+    touchY = y;
+    event.preventDefault();
+  }, { passive: false });
+
+  var verdict = document.getElementById("verdict");
+  if (verdict) {
+    if (verdict.classList.contains("is-right")) {
+      burst();
+      document.dispatchEvent(new CustomEvent("addresscard:reveal-pin"));
+    }
+    window.setTimeout(function () {
+      verdict.classList.add("is-gone");
+    }, 1500);
+  }
+
+  function burst() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var canvas = document.getElementById("confetti");
+    if (!canvas) return;
+    canvas.hidden = false;
+    var ctx = canvas.getContext("2d");
+    var w = canvas.width = window.innerWidth;
+    var h = canvas.height = window.innerHeight;
+    var colors = ["#ffe14a", "#ffffff", "#1d4ed8", "#e07a3d"];
+    var bits = [];
+    var i;
+    for (i = 0; i < 90; i += 1) {
+      bits.push({
+        x: w * 0.5 + (Math.random() - 0.5) * 120,
+        y: h * 0.4,
+        vx: (Math.random() - 0.5) * 16,
+        vy: -7 - Math.random() * 9,
+        g: 0.28,
+        s: 4 + Math.random() * 6,
+        c: colors[i % colors.length],
+        r: Math.random() * 6,
+      });
+    }
+    var start = performance.now();
+    function frame(now) {
+      ctx.clearRect(0, 0, w, h);
+      bits.forEach(function (bit) {
+        bit.vy += bit.g;
+        bit.x += bit.vx;
+        bit.y += bit.vy;
+        bit.r += 0.15;
+        ctx.save();
+        ctx.translate(bit.x, bit.y);
+        ctx.rotate(bit.r);
+        ctx.fillStyle = bit.c;
+        ctx.fillRect(-bit.s / 2, -bit.s / 4, bit.s, bit.s / 2);
+        ctx.restore();
+      });
+      if (now - start < 1600) requestAnimationFrame(frame);
+      else canvas.remove();
+    }
+    requestAnimationFrame(frame);
+  }
+
   flip.addEventListener("keydown", function (event) {
     if (event.target !== flip) return;
     if (event.key !== "Enter" && event.key !== " ") return;
@@ -144,9 +219,5 @@
     tilt.classList.remove("is-lit");
     tilt.style.setProperty("--rx", "0deg");
     tilt.style.setProperty("--ry", "0deg");
-    if (glare) {
-      glare.style.setProperty("--gx", "50%");
-      glare.style.setProperty("--gy", "18%");
-    }
   });
 })();

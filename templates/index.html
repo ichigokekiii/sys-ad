@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.1/dist/maplibre-gl.css" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=11">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=14">
 </head>
 <body>
   <div
@@ -28,13 +28,13 @@
     <ul id="place-results" hidden></ul>
   </form>
 
-  <div id="modal" {% if not quiz_result %}hidden{% endif %} role="dialog" aria-labelledby="card-title">
+  <div id="modal" hidden role="dialog" aria-labelledby="card-title">
     <div class="modal-stack">
       <button type="button" id="close-card" aria-label="Close">×</button>
       <div class="modal-frame">
       <div class="scene">
         <div id="card-tilt">
-          <div id="card-flip" class="{{ 'is-flipped' if quiz_result else '' }}" tabindex="0" aria-pressed="{{ 'true' if quiz_result else 'false' }}" aria-label="Turn the address card">
+          <div id="card-flip" tabindex="0" aria-pressed="false" aria-label="Turn the address card">
             <article class="face front">
               {% set place_name = card.city or card.country or "Unknown place" %}
               {% set jersey = card.asn[2:] if card.asn and card.asn.startswith("AS") and card.asn[2:].isdigit() else "" %}
@@ -101,9 +101,6 @@
               {% elif quiz.prompt %}
               <p>{{ quiz.prompt }}</p>
               {% endif %}
-              {% if quiz_result %}
-              <p class="grade">{{ quiz_result }}</p>
-              {% endif %}
               </div>
             </article>
             <div id="glare" aria-hidden="true"></div>
@@ -114,9 +111,23 @@
     </div>
   </div>
 
+  {% if quiz_result %}
+  <div id="verdict" class="verdict {{ 'is-right' if quiz_result == 'Correct.' else 'is-wrong' }}" role="{{ 'status' if quiz_result == 'Correct.' else 'alert' }}">
+    {% if quiz_result == "Correct." %}
+    <p class="verdict-word">Correct.</p>
+    {% elif quiz_result.startswith("Close.") %}
+    <p class="verdict-word">Wrong.</p>
+    <p class="verdict-detail">{{ quiz_result[7:] }}</p>
+    {% else %}
+    <p class="verdict-detail">{{ quiz_result }}</p>
+    {% endif %}
+  </div>
+  <canvas id="confetti" hidden></canvas>
+  {% endif %}
+
   <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.1/dist/maplibre-gl.js"></script>
-  <script src="{{ url_for('static', filename='map.js') }}?v=11"></script>
-  <script src="{{ url_for('static', filename='card.js') }}?v=11"></script>
+  <script src="{{ url_for('static', filename='map.js') }}?v=12"></script>
+  <script src="{{ url_for('static', filename='card.js') }}?v=14"></script>
   <script src="{{ url_for('static', filename='search.js') }}?v=7"></script>
   <script>
     fetch("https://api6.ipify.org?format=json")
