@@ -1,0 +1,281 @@
+:root {
+  --ink: #14202b;
+  --paper: #f3efe6;
+  --muted: #8d99a6;
+  --copper: #e07a3d;
+  --line: rgba(243, 239, 230, 0.16);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #0c141c;
+  color: var(--paper);
+  font-family: "Sora", sans-serif;
+}
+
+#map {
+  position: fixed;
+  inset: 0;
+}
+
+.map-fallback {
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
+  max-width: 280px;
+  margin: 0;
+  padding: 12px 14px;
+  background: var(--ink);
+  border-radius: 12px;
+}
+
+#reopen {
+  position: fixed;
+  z-index: 3;
+  top: 16px;
+  left: 16px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font: 600 14px/1 "Sora", sans-serif;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+#reopen:focus-visible,
+#close-card:focus-visible,
+#card-flip:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--copper);
+  outline-offset: 3px;
+}
+
+#modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 28px 7vw;
+  pointer-events: none;
+}
+
+#modal[hidden] { display: none; }
+
+.modal-frame {
+  position: relative;
+  width: min(380px, 100%);
+  pointer-events: auto;
+}
+
+#close-card {
+  position: absolute;
+  z-index: 4;
+  top: -8px;
+  right: -8px;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.scene { perspective: 1200px; }
+
+#card-tilt {
+  --rx: 0deg;
+  --ry: 0deg;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  transition: transform 0.12s linear;
+}
+
+#card-flip {
+  position: relative;
+  min-height: 520px;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  cursor: pointer;
+}
+
+#card-flip.is-flipped { transform: rotateY(180deg); }
+
+.face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 28px 26px 24px;
+  border-radius: 22px;
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.05), transparent 42%),
+    var(--ink);
+  color: var(--paper);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.face.back { transform: rotateY(180deg); }
+
+#glare {
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  pointer-events: none;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: radial-gradient(
+    circle at var(--gx, 50%) var(--gy, 18%),
+    rgba(255, 255, 255, 0.28),
+    transparent 46%
+  );
+  mix-blend-mode: soft-light;
+}
+
+.kicker, .hint, .quiet {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.face-top, .stats, .pair {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stamp {
+  align-self: flex-start;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(224, 122, 61, 0.16);
+  color: #ffd7c2;
+  font: 600 12px/1 "IBM Plex Mono", monospace;
+}
+
+#ipv6-badge {
+  margin: 0;
+  color: var(--muted);
+  font: 500 13px/1.4 "IBM Plex Mono", monospace;
+  overflow-wrap: anywhere;
+}
+
+#ipv6-badge.is-on { color: #ffd7c2; }
+
+.ip {
+  margin: 4px 0 0;
+  font: 500 26px/1.25 "IBM Plex Mono", monospace;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+}
+
+.isp {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.stats { margin-top: auto; }
+
+.stats div, .pair div { display: flex; flex-direction: column; gap: 4px; }
+
+.stats span, .pair span, label span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.stats strong, .pair strong {
+  font: 500 15px/1.2 "IBM Plex Mono", monospace;
+}
+
+.roast {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.notice {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(224, 122, 61, 0.14);
+  color: #ffd7c2;
+  font-size: 14px;
+}
+
+form { display: flex; flex-direction: column; gap: 8px; }
+
+form p { margin: 0 0 4px; font-weight: 600; }
+
+label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+}
+
+button[type="submit"] {
+  min-height: 44px;
+  margin-top: 6px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--copper);
+  color: #1a100c;
+  font: 600 15px/1 "Sora", sans-serif;
+  cursor: pointer;
+}
+
+.grade { margin: 0; font-weight: 600; }
+
+@media (min-width: 1100px) {
+  #modal {
+    align-items: center;
+    justify-content: flex-start;
+    padding: 40px 56px;
+  }
+
+  .modal-frame { width: 400px; }
+
+  #card-flip { min-height: 540px; }
+
+  #reopen { top: 20px; left: 20px; }
+}
+
+@media (max-width: 700px) {
+  #modal {
+    align-items: flex-end;
+    padding: 16px;
+  }
+
+  #card-flip { min-height: 460px; }
+
+  .ip { font-size: 28px; }
+
+  #reopen { top: auto; bottom: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #card-tilt, #card-flip { transition: none; }
+}

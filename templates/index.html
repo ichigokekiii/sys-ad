@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Address Card</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=Sora:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.1/dist/maplibre-gl.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2">
+</head>
+<body>
+  <div
+    id="map"
+    data-lat="{{ card.latitude if card.latitude is not none else '' }}"
+    data-lon="{{ card.longitude if card.longitude is not none else '' }}"
+  ></div>
+
+  <button type="button" id="reopen" hidden>Address card</button>
+
+  <div id="modal" role="dialog" aria-labelledby="card-title">
+    <div class="modal-frame">
+      <button type="button" id="close-card" aria-label="Close">×</button>
+      <div class="scene">
+        <div id="card-tilt">
+          <div id="card-flip" class="{{ 'is-flipped' if quiz_result else '' }}" tabindex="0" aria-pressed="{{ 'true' if quiz_result else 'false' }}" aria-label="Turn the address card">
+            <article class="face front">
+              <div class="face-top">
+                <p class="kicker" id="card-title">Address Card</p>
+                <p class="stamp">{{ card.country_code or "??" }}</p>
+              </div>
+              {% if notice %}
+              <p class="notice">{{ notice }}</p>
+              {% endif %}
+              <h1 class="ip">{{ card.ipv4 or card.query_ip or "No address yet" }}</h1>
+              <p class="isp">{{ card.isp or "Provider unknown" }}</p>
+              <div class="stats">
+                <div>
+                  <span>ASN</span>
+                  <strong>{{ card.asn or "Unknown" }}</strong>
+                </div>
+                <div>
+                  <span>City</span>
+                  <strong>{{ card.city or "Unknown" }}</strong>
+                </div>
+              </div>
+              <p id="ipv6-badge">Checking IPv6</p>
+              <p class="hint">Click the card to turn it. Drag the map behind it.</p>
+            </article>
+            <article class="face back">
+              <p class="kicker">The internet's guess</p>
+              <p class="roast">{{ roast }}</p>
+              <div class="pair">
+                <div>
+                  <span>Latitude</span>
+                  <strong>{{ card.latitude if card.latitude is not none else "Unknown" }}</strong>
+                </div>
+                <div>
+                  <span>Longitude</span>
+                  <strong>{{ card.longitude if card.longitude is not none else "Unknown" }}</strong>
+                </div>
+              </div>
+              <p class="quiet">Source {{ card.source }}</p>
+              {% if quiz.choices %}
+              <form action="/quiz" method="post">
+                <p>{{ quiz.prompt }}</p>
+                {% for choice in quiz.choices %}
+                <label>
+                  <input type="radio" name="choice" value="{{ choice }}" required>
+                  {{ choice }}
+                </label>
+                {% endfor %}
+                <button type="submit">Check</button>
+              </form>
+              {% elif quiz.prompt %}
+              <p>{{ quiz.prompt }}</p>
+              {% endif %}
+              {% if quiz_result %}
+              <p class="grade">{{ quiz_result }}</p>
+              {% endif %}
+            </article>
+            <div id="glare" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.1/dist/maplibre-gl.js"></script>
+  <script src="{{ url_for('static', filename='map.js') }}?v=2"></script>
+  <script src="{{ url_for('static', filename='card.js') }}?v=2"></script>
+  <script>
+    fetch("https://api6.ipify.org?format=json")
+      .then(function (response) {
+        if (!response.ok) throw new Error("status");
+        return response.json();
+      })
+      .then(function (data) {
+        var badge = document.getElementById("ipv6-badge");
+        badge.textContent = data && data.ip ? "IPv6 " + data.ip : "No IPv6 yet";
+        badge.classList.add("is-on");
+      })
+      .catch(function () {
+        var badge = document.getElementById("ipv6-badge");
+        badge.textContent = "No IPv6 yet";
+        badge.classList.add("is-off");
+      });
+  </script>
+</body>
+</html>
