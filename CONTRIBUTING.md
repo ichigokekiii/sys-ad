@@ -2,11 +2,11 @@
 
 Three people work in this repository. Each change uses one branch, one pull request, and one reviewer. Merge the pull request into `main`.
 
-The remote is `[GitHub repository link]` until the repository exists. Add `[Luis GitHub username]` and `[Emanuel GitHub username]` as collaborators after that remote exists. From a clone of the repository, run these two commands.
+The remote is https://github.com/ichigokekiii/sys-ad. Add `lg-araneta` and `Leunewashere` as collaborators. From a clone of the repository, run these two commands.
 
 ```bash
-gh repo add-collaborator [Luis GitHub username]
-gh repo add-collaborator [Emanuel GitHub username]
+gh repo add-collaborator lg-araneta
+gh repo add-collaborator Leunewashere
 ```
 
 The plan does not name a GitHub username for John Constantine C. Acuesta. In the commands below, replace `GITHUB_USERNAME_OF_JOHN` with his username. Do not invent one in this file.
@@ -50,7 +50,7 @@ git checkout -b john/ui
 git add .
 git commit -m "Build the address card page"
 git push -u origin john/ui
-gh pr create --base main --title "Build the address card page" --body "Card, map, and quiz page." --reviewer "[Luis GitHub username]"
+gh pr create --base main --title "Build the address card page" --body "Card, map, and quiz page." --reviewer "lg-araneta"
 ```
 
 After Luis approves, merge into `main`.
@@ -90,7 +90,7 @@ git checkout -b john/paper
 git add .
 git commit -m "Add the project paper"
 git push -u origin john/paper
-gh pr create --base main --title "Add the project paper" --body "Project paper for Address Card." --reviewer "[Emanuel GitHub username]"
+gh pr create --base main --title "Add the project paper" --body "Project paper for Address Card." --reviewer "Leunewashere"
 ```
 
 After Emanuel approves, merge into `main`.

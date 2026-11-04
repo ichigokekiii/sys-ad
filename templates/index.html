@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.1/dist/maplibre-gl.css" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=17">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=21">
 </head>
 <body>
   <div
@@ -40,7 +40,6 @@
               {% set place_name = card.city or card.country or "Unknown place" %}
               {% set jersey = card.asn[2:] if card.asn and card.asn.startswith("AS") and card.asn[2:].isdigit() else "" %}
               <div class="kit-id">
-                <p class="stamp">{{ card.country_code or "??" }}</p>
                 <div>
                   <p class="kit-name" id="card-title">{{ place_name }}</p>
                   <p class="kit-meta" id="card-meta">{{ card.country or "Unknown country" }} | {{ card.isp or "Unknown provider" }}</p>
@@ -65,7 +64,7 @@
                   <strong id="stat-c">None</strong>
                   <span id="stat-c-label">MAC</span>
                 </div>
-                <p class="v6"><span id="v6-label">IPv6</span> <span id="ipv6-badge">Checking IPv6</span></p>
+                <p class="v6"><span id="ipv6-badge">Checking IPv6</span><span id="v6-label">IPv6</span></p>
                 <div class="meter" role="img" aria-label="Lookup source {{ card.source }}">
                   <span class="meter-fill"></span>
                 </div>
@@ -76,7 +75,7 @@
             <article class="face back">
               <div class="face-clip">
               <div class="face-scroll">
-              <p class="kicker">The internet's guess</p>
+              <p class="kicker">Did you know...?</p>
               <p class="roast">{{ roast }}</p>
               <div class="pair">
                 <div>
@@ -88,11 +87,11 @@
                   <strong id="back-lon">{{ card.longitude if card.longitude is not none else "Unknown" }}</strong>
                 </div>
               </div>
-              <p class="quiet" id="back-where" hidden></p>
-              <p class="quiet">Source {{ card.source }}</p>
+              <p class="where" id="back-where" hidden><span>Address</span><strong id="back-address"></strong></p>
+              <p class="source"><span>Source</span><strong>{{ card.source }}</strong></p>
               {% if quiz.choices %}
               <form action="/quiz" method="post">
-                <p>{{ quiz.prompt }}</p>
+                <p class="ask">{{ quiz.prompt }}</p>
                 {% for choice in quiz.choices %}
                 <label>
                   <input type="radio" name="choice" value="{{ choice }}" required>
@@ -102,7 +101,7 @@
                 <button type="submit">Check</button>
               </form>
               {% elif quiz.prompt %}
-              <p>{{ quiz.prompt }}</p>
+              <p class="ask">{{ quiz.prompt }}</p>
               {% endif %}
               </div>
               </div>
@@ -131,7 +130,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.1/dist/maplibre-gl.js"></script>
   <script src="{{ url_for('static', filename='map.js') }}?v=12"></script>
-  <script src="{{ url_for('static', filename='card.js') }}?v=16"></script>
+  <script src="{{ url_for('static', filename='card.js') }}?v=17"></script>
   <script src="{{ url_for('static', filename='search.js') }}?v=7"></script>
   <script>
     fetch("https://api6.ipify.org?format=json")

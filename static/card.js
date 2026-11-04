@@ -22,6 +22,7 @@
   var backLat = document.getElementById("back-lat");
   var backLon = document.getElementById("back-lon");
   var backWhere = document.getElementById("back-where");
+  var backAddress = document.getElementById("back-address");
   var network = {
     title: title.textContent,
     meta: meta.textContent,
@@ -58,9 +59,9 @@
     badge.textContent = badge.dataset.connection || badge.textContent;
     backLat.textContent = network.lat;
     backLon.textContent = network.lon;
-    if (backWhere) {
+    if (backWhere && backAddress) {
       backWhere.hidden = true;
-      backWhere.textContent = "";
+      backAddress.textContent = "";
     }
   }
 
@@ -70,9 +71,9 @@
     meta.title = place.address;
     backLat.textContent = Number(place.latitude).toFixed(5);
     backLon.textContent = Number(place.longitude).toFixed(5);
-    if (backWhere) {
+    if (backWhere && backAddress) {
       backWhere.hidden = false;
-      backWhere.textContent = place.address;
+      backAddress.textContent = place.address;
     }
     flip.classList.remove("is-flipped");
     flip.setAttribute("aria-pressed", "false");

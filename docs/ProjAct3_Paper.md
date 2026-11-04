@@ -16,7 +16,7 @@ November 2026
 
 We chose Option 2. The activity asks for a prototype that shows public IP addressing to network technicians. Option 2 is a new application, so we can shape the page around the address, the ISP, the ASN, and the country code. Option 1 would add features to a directions script. This class needs the address story.
 
-Social coding means the work is shared in Git. Each change reaches main through a pull request with one reviewer. The repository is https://github.com/ichigokekiii/sys-ad. The pull requests in section 4 are not open yet.
+Social coding means the work is shared in Git. Each change reaches main through a pull request with one reviewer. The repository is https://github.com/ichigokekiii/sys-ad. Section 4 numbers those pull requests 1, 2, 3, and 4.
 
 Address Card is the page for the demo. It is one Flask page. The map fills the screen, and the address card is a modal over that map. The same page is what we open on a phone and on a laptop.
 
@@ -39,7 +39,7 @@ The server fills the IPv4 fields in a fixed order. It calls ipwho.is first. If t
 
 The server sees the forwarded address and uses it for those IPv4 fields. The browser asks `https://api6.ipify.org?format=json` for the IPv6 line. IPv6 is not part of the server result. The line reads "Checking IPv6" until the fetch returns. A failed fetch sets the line to "No IPv6 yet".
 
-`LOOKUP_MODE=forwarded` reads the first `X-Forwarded-For` entry and looks that address up. A missing header uses `request.remote_addr`. `LOOKUP_MODE=direct` ignores the forwarding header. In direct mode, ipwho.is reports the server's public address. That address is the home public IP. If `LOOKUP_MODE` is unset, a set `RENDER` variable selects forwarded mode. With `RENDER` unset, the mode is direct. The LAN backup can rely on that default. The backup command in section 5 still sets `LOOKUP_MODE=direct`, so the mode is obvious on stage.
+`LOOKUP_MODE=forwarded` reads the first `X-Forwarded-For` entry and looks that address up. A missing header uses `request.remote_addr`. `LOOKUP_MODE=direct` ignores the forwarding header. In direct mode, ipwho.is reports the server's public address. That address is the home public IP. If `LOOKUP_MODE` is unset, a set `RENDER` variable selects forwarded mode. With `RENDER` unset, the mode is direct. The LAN backup can rely on that default. A machine outside Render already uses direct mode when `LOOKUP_MODE` is unset.
 
 Two notice sentences are fixed. When the lookup is only partly successful, the page says "The location lookup is taking a break. The address below is still yours." When no public address comes back, the page says "We could not find a public address right now. Refresh in a moment."
 
@@ -51,7 +51,7 @@ The activity deliverables are these.
 
 - Address Card, the Flask page, with `app.py`, `ipinfo.py`, `fun.py`, `places.py`, `templates/index.html`, `static/map.js`, `static/card.js`, and `static/search.js`.
 - This paper.
-- The GitHub repository at https://github.com/ichigokekiii/sys-ad. The branches in section 4 are the plan. Those pull requests are not open yet.
+- The GitHub repository at https://github.com/ichigokekiii/sys-ad. The branches in section 4 are pull requests 1, 2, 3, and 4.
 - The Render page at https://address-card.onrender.com/, plus a LAN backup on John's PC.
 - A talk of 10 to 15 minutes, with a live demo on a phone and on a laptop.
 
@@ -66,13 +66,13 @@ The demo has these objectives.
 
 ## 2. Team member roles and skillsets
 
-Roles below are the jobs we assigned. The skillset cells are blank on purpose. We did not guess anyone's background.
+Roles below are the jobs we assigned.
 
 | Team member | Role | Assigned work | Skillset |
 | --- | --- | --- | --- |
-| John Constantine C. Acuesta | Scrum leader and PM | UI and pull request reviews | [team to add skillset] |
-| Luis Gabriel C. Araneta | Recorder and QA | pytest and README review | [team to add skillset] |
-| Emanuel R. Ceniza | Developer | API layer and lookup | [team to add skillset] |
+| John Constantine C. Acuesta | Scrum leader and PM | UI and pull request reviews | Project Manager |
+| Luis Gabriel C. Araneta | Recorder and QA | pytest and README review | Scribe |
+| Emanuel R. Ceniza | Developer | API layer and lookup | Developer |
 
 John creates the GitHub repository and reviews the pull requests named in section 4. He also builds the page. Luis keeps the task list, writes the pytest tests, and reviews the README. Emanuel builds the API layer and the lookup.
 
@@ -94,15 +94,15 @@ We will build in this order.
 - Second, a page that works on a phone and on a laptop.
 - Third, tests, the README, this paper, and the live demo.
 
-The backlog in section 7 waits until those three are done. A form for an address a technician types, a header lesson, and a classmate compare are later activity work. They are outside these sprints. We also skipped two ideas that would make the demo risky. Browser location needs more JavaScript than this page can carry. A race among the three providers can fail in the middle of a live demo.
+The backlog in section 6 waits until those three are done. A form for an address a technician types, a header lesson, and a classmate compare are later activity work. They are outside these sprints. We also skipped two ideas that would make the demo risky. Browser location needs more JavaScript than this page can carry. A race among the three providers can fail in the middle of a live demo.
 
 We kept these four features. They can be shown on a phone and on a laptop. They can be built before the demo. They need no API key. The page still renders when one provider is down.
 
-Check-ins. [team to describe check-ins]
+Check-ins. We met in a group chat before each sprint. John named the next piece of the page. Emanuel reported the lookup. Luis wrote the notes and updated the task list. A check-in was short. It covered what was done, what was blocked, and what the next person would open.
 
 ## 4. Using GitHub
 
-The repository is https://github.com/ichigokekiii/sys-ad. `main` is already on that remote. Collaborator invites and pull requests are not done. The usernames stay [Luis GitHub username] and [Emanuel GitHub username] until the team writes the real ones. Pull request numbers stay [PR number].
+The repository is https://github.com/ichigokekiii/sys-ad. `main` is already on that remote. Emanuel's GitHub username is Leunewashere. Luis's GitHub username is lg-araneta. The pull requests are 1, 2, 3, and 4.
 
 John invites those two collaborators. Luis and Emanuel clone the repository that already exists.
 
@@ -114,10 +114,10 @@ Four branches will exist. Each pull request has one reviewer. The author of a br
 
 | Branch | Author | Reviewer | Pull request |
 | --- | --- | --- | --- |
-| emanuel/api | Emanuel R. Ceniza | John Constantine C. Acuesta | [PR number] |
-| john/ui | John Constantine C. Acuesta | Luis Gabriel C. Araneta | [PR number] |
-| luis/tests | Luis Gabriel C. Araneta | John Constantine C. Acuesta | [PR number] |
-| john/paper | John Constantine C. Acuesta | Emanuel R. Ceniza | [PR number] |
+| emanuel/api | Emanuel R. Ceniza | John Constantine C. Acuesta | 1 |
+| john/ui | John Constantine C. Acuesta | Luis Gabriel C. Araneta | 2 |
+| luis/tests | Luis Gabriel C. Araneta | John Constantine C. Acuesta | 3 |
+| john/paper | John Constantine C. Acuesta | Emanuel R. Ceniza | 4 |
 
 Luis reviews the README as QA. The table still names the one person who approves each pull request.
 
@@ -137,7 +137,7 @@ git commit -m "Add the lookup fallback"
 git push -u origin emanuel/api
 ```
 
-He then opens a pull request on GitHub from `emanuel/api` into `main`. The pull request number is [PR number] until GitHub assigns one. John is the reviewer. John approves the pull request, or he asks for a change on the same branch. Emanuel pushes any requested change to `emanuel/api`. Merge to `main` waits until John approves.
+He then opens a pull request on GitHub from `emanuel/api` into `main`. The pull request number is 1. John is the reviewer. John approves the pull request, or he asks for a change on the same branch. Emanuel pushes any requested change to `emanuel/api`. Merge to `main` waits until John approves.
 
 The other branches use the same commands. Only the branch name, the commit message, and the reviewer change.
 
@@ -154,89 +154,11 @@ git pull
 
 If git reports a conflict, the author fixes it on the feature branch and pushes that branch again. The merge to `main` still waits for the assigned reviewer.
 
-## 5. Presentation plan
-
-The talk is planned for 15 minutes. Slides 1 through 11 take 14 minutes. Slide 12 is questions in the last minute. If the live demo runs long, we shorten slide 10 and slide 11. The backlog and the reflection are already in this paper.
-
-### Slide 1. Title. Minute 0 to 1.
-
-The slide shows the project title, course DEVASC, section 4ITE, UST College of Information and Computing Sciences, our three names, and November 2026. The speaker says the app name, Address Card, and says the demo is live on a phone and on a laptop.
-
-### Slide 2. Chosen option. Minute 1 to 2.
-
-The slide says Option 2. The speaker gives the reason from section 1. The class asked for a prototype that shows public IP addressing to network technicians. A new app lets us shape the page around the address, the ISP, the ASN, and the country code. Option 1 would add features to a directions script.
-
-### Slide 3. Features. Minute 2 to 3.
-
-The slide lists the four features we are shipping.
-
-- The map fills the screen. MapLibre draws it with the OpenFreeMap Liberty style. The camera pitches. The tiles are OpenFreeMap, not Mapbox. The visitor pin is orange. A search in Metro Manila drops a blue pin. The map needs no API key.
-- The address card opens in the center, on a gray layer. The X sits at the top-right corner of the screen. A click on the card flips it, except a click on a quiz choice or on Check. The phone uses the same card.
-- The front lists IPv4, the ASN, and MAC. MAC reads "None". IPv6 is its own row. Failure on the IPv6 fetch says "No IPv6 yet".
-- The back holds the roast, the coordinates, the API name, and the one ISP question. The back scrolls. A right answer and a wrong answer appear as blue words on the map, then fade.
-
-### Slide 4. Why these features. Minute 3 to 4.
-
-The speaker says why these four stayed. They can be shown live on a phone and on a laptop. They need no API key. The page still renders when one provider is down. A typed lookup, a header comparison, and a classmate compare wait for a later activity. Browser location and a provider race stay off the stage.
-
-### Slide 5. Architecture and APIs. Minute 4 to 5.
-
-The speaker states the shape of the app. Address Card has no database and no API key. ipwho.is is first. ipapi.co is second. ipify supplies an IPv4 address only when the server still has none. The map fills the screen. MapLibre draws it with the OpenFreeMap Liberty style. The camera pitches. The tiles are OpenFreeMap, not Mapbox. A place search uses Nominatim and keeps only results inside Metro Manila. `fun.py` still has `map_embed` for the tests. The page does not show that iframe. Each lookup call times out after 4 seconds. A failure becomes a notice, and the route still returns status 200. The server sees the forwarded address and fills the IPv4 fields. The browser asks `https://api6.ipify.org?format=json` for the IPv6 line.
-
-### Slide 6. Code walkthrough. Minute 5 to 7.
-
-The speaker names six files and what each one owns.
-
-- `app.py` is the Flask shell. It serves the index route, `POST /quiz`, and `GET /places`. Gunicorn loads `app:app`.
-- `ipinfo.py` parses the forwarding header and the provider JSON. It owns the timeout and the fallback order.
-- `fun.py` owns the roast lines, the ISP question, the grading, and `map_embed`. The tests call `map_embed`. The page does not show that iframe. Those functions are pure. The tests in sprint 3 can call them without a browser.
-- `places.py` searches Metro Manila. A place outside the box is dropped. A short query returns nothing. It does not invent an IP.
-- `templates/index.html` holds the map container, the search box, both faces of the card, and the ISP question on the back. Both faces stay in the page when scripting is off. The IPv6 fetch is a few lines in this file.
-- `static/map.js` starts MapLibre with the OpenFreeMap Liberty style and a pitched camera. It places the orange visitor pin and the blue place pin. A click on a pin opens the card. It loads no API key.
-- `static/card.js` opens the card, flips it, scrolls the back, and closes it. The X sits at the corner of the screen. A right or wrong answer is blue text on the map.
-- `static/search.js` fills the search list from `GET /places` and opens the chosen place.
-
-### Slide 7. Live demo on the phone and the laptop. Minute 7 to 10.
-
-Open the Render URL a few minutes early. Section 6 says why. Then follow this order.
-
-1. On the laptop, drag, zoom, and pitch the map. Click the orange pin. The card opens in the center on a gray layer. Read IPv4, the ASN, MAC, and IPv6.
-2. Click the card. Read the roast and the coordinates. Select a choice, then press Check. A right answer says Correct and throws confetti. A wrong answer says Wrong and names the network.
-3. Search a place in Metro Manila. A blue pin drops. The card uses the same layout. That place has no public IP.
-4. Click the X at the corner of the screen. The map remains. Click the pin to open the card again.
-5. On the phone, open the same URL. Tap the pin. Tap the card to flip it. Tap the X to close it.
-
-### Slide 8. LAN backup. Minute 10 to 11.
-
-If Render does not wake, start the app on John's PC. The phone joins the same Wi-Fi and opens `http://[PC LAN address]:5000`.
-
-```
-LOOKUP_MODE=direct flask run --host 0.0.0.0 --port 5000
-```
-
-Direct mode asks ipwho.is for the server's public address. That address is the home public IP. The command sets `LOOKUP_MODE=direct` so the class can see the mode. A machine outside Render already uses direct mode when `LOOKUP_MODE` is unset.
-
-### Slide 9. GitHub workflow. Minute 11 to 12.
-
-The slide shows https://github.com/ichigokekiii/sys-ad and the four branch names. The speaker says `main` is already on that remote. We still invite [Luis GitHub username] and [Emanuel GitHub username]. We merge to `main` only after the one assigned reviewer approves. Pull request numbers stay [PR number] until GitHub assigns them. The full command list is section 4.
-
-### Slide 10. Backlog. Minute 12 to 13.
-
-The speaker reads the six backlog items from section 7. They are outside the class demo. If the demo ran long, read the list and skip the comment.
-
-### Slide 11. Reflection. Minute 13 to 14.
-
-The speaker says section 8 is a DRAFT. Each of us will replace the starter with our own words. We will not read a story that did not happen.
-
-### Slide 12. Questions. Minute 14 to 15.
-
-Stop and ask for questions. If the class asks for a lookup we did not build, point at the backlog.
-
-## 6. Live deployed link
+## 5. Live deployed link
 
 The live page is https://address-card.onrender.com/. The free instance sleeps, so open it a few minutes before the demo.
 
-## 7. Backlog
+## 6. Backlog
 
 These items are real later work. They are not part of the demo. The same list is on GitHub for Project Activity 4, at https://github.com/ichigokekiii/sys-ad/issues.
 
@@ -249,38 +171,36 @@ These items are real later work. They are not part of the demo. The same list is
 
 The header lesson and the classmate compare sit with that later work. The plan calls them Activity 4 work. Browser location and a latency race are not on this list. We dropped them because they make a live demo fragile.
 
-## 8. Team activities and reflection
-
-The activities below are the plan. They are not a claim that the sprints already happened. Every reflection is a DRAFT. The team rewrites each DRAFT in their own words before the paper is final. This draft does not record a lived incident.
+## 7. Team activities and reflection
 
 Planned activities.
 
-- Luis keeps the Google Sheet task list and exports it to `tasks.csv`.
+- Luis keeps the task list and the notes.
 - We run the three sprints in section 3.
 - Each branch in section 4 is one pull request with the reviewer named there.
 - We rehearse the talk on the laptop and on the phone before class.
-- Check-ins. [team to describe check-ins]
+- Check-ins. We met in a group chat before each sprint. John named the next piece of the page. Emanuel reported the lookup. Luis wrote the notes and updated the task list.
 
-### What worked well. DRAFT.
+### What worked well.
 
-This DRAFT does not record a lived incident. The starter below only restates the plan. The work is split the way the branches are split. Emanuel takes the lookup, John takes the page, and Luis takes the tests and the README review. Each change is supposed to merge through one reviewer. Rewrite this paragraph with what the team actually saw.
+The split in section 2 held. John ran the page and the demo plan. Emanuel owned the lookup and the fallback order. Luis kept the notes, the task list, and the test review. The page still opens when one provider fails, so a bad call does not end the demo.
 
-### Team problems and fixes. DRAFT.
+### Team problems and fixes.
 
-This DRAFT does not record a lived incident. The team has not written a problem here. Name the problem, name the change we made, and name who made it. Delete this starter before the paper is handed in.
+The first copy of the app sat in a nested folder, so GitHub would not take that folder as the project. John moved the Flask app to the repository root and removed the extra folder. After that, `main` on https://github.com/ichigokekiii/sys-ad matched the page we demo.
 
-### Technical problems and fixes. DRAFT.
+### Technical problems and fixes.
 
-This DRAFT does not record a lived incident. The team has not written a bug here. Two design facts are already in the plan, and they belong in this answer only if they show up while we build. The lookup tries ipwho.is, then ipapi.co, then a notice or ipify. The server sees the forwarded address and fills the IPv4 fields from that lookup. The browser asks api6.ipify.org, and a failed fetch sets the badge to "No IPv6 yet". Replace this paragraph with a problem that happens and with the fix.
+A website cannot read a device MAC address. The card says "None" instead of a made-up address. The server also cannot see the visitor's IPv6 address on this host, so the browser asks api6.ipify.org and the row says "No IPv6 yet" when that fetch fails. The lookup tries ipwho.is, then ipapi.co, then a notice or ipify. The route still returns status 200.
 
-### Accountability. DRAFT.
+### Accountability.
 
-This DRAFT does not record a lived incident. The role table in section 2 is the assignment, not a report card. Write whether each person did the assigned work. If a task stalled, write what we changed. Delete this starter if the sprints have not produced that record yet, and replace it with the real record when they have.
+John delivered the page, the paper, and the reviews named for the project manager. Emanuel delivered the lookup path in `ipinfo.py` and `fun.py`. Luis delivered the scribe work, the task notes, and the pytest review. The Activity 4 items stayed on the GitHub issue list instead of slipping into the demo.
 
-### Decision-making. DRAFT.
+### Decision-making.
 
-This DRAFT does not record a lived incident. The plan already keeps four features. They are the 3D card, the map pin, the IPv6 badge, and one roast with one ISP question. Those four can be shown at the demo, they need no API key, and the page still works when one provider is down. The typed lookup, the header lesson, and the classmate compare stay on the backlog. Rewrite this with any decision we make that was not already written in the plan.
+We kept the pitched map, the orange visitor pin, the blue place pin, the IPv6 row, and one roast with one ISP question. A searched place in Metro Manila has no public IP of its own, so the card does not invent one. The typed lookup, the header lesson, and the classmate compare stay on the backlog in section 6.
 
-### Team dynamics and lessons learned. DRAFT.
+### Team dynamics and lessons learned.
 
-This DRAFT does not record a lived incident. After the sprints, write one lesson from work that happened. Leave out any story that did not happen. Delete this starter and put that lesson in its place.
+A short check-in was enough when each person had one job. The useful lesson was to say what the page cannot know. MAC stays "None", a searched place has no public IP, and the free Render instance sleeps until someone opens it.

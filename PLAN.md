@@ -182,7 +182,7 @@ One repo. Branches `emanuel/api`, `john/ui`, `luis/tests`, `john/paper`. Each ch
 - John builds the UI and reviews pull requests.
 - Luis writes the pytest tests and reviews the README.
 
-Until `gh` is logged in, the paper says `[GitHub repository link]`. Usernames stay `[Luis GitHub username]` and `[Emanuel GitHub username]`.
+Until `gh` is logged in, the paper says `[GitHub repository link]`. Luis is `lg-araneta`. Emanuel is `Leunewashere`.
 
 Until Render answers with a URL, the paper says `[Render live link to be added]`.
 
