@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.1/dist/maplibre-gl.css" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=16">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=17">
 </head>
 <body>
   <div
@@ -36,6 +36,7 @@
         <div id="card-tilt">
           <div id="card-flip" tabindex="0" aria-pressed="false" aria-label="Turn the address card">
             <article class="face front">
+              <div class="face-clip">
               {% set place_name = card.city or card.country or "Unknown place" %}
               {% set jersey = card.asn[2:] if card.asn and card.asn.startswith("AS") and card.asn[2:].isdigit() else "" %}
               <div class="kit-id">
@@ -70,8 +71,10 @@
                 </div>
                 <p class="hint">Tap the card to turn it. Source {{ card.source }}.</p>
               </div>
+              </div>
             </article>
             <article class="face back">
+              <div class="face-clip">
               <div class="face-scroll">
               <p class="kicker">The internet's guess</p>
               <p class="roast">{{ roast }}</p>
@@ -101,6 +104,7 @@
               {% elif quiz.prompt %}
               <p>{{ quiz.prompt }}</p>
               {% endif %}
+              </div>
               </div>
             </article>
             <div id="glare" aria-hidden="true"></div>

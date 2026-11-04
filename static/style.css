@@ -192,29 +192,40 @@ input:focus-visible {
 .face {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 16px 16px 14px;
-  max-height: calc(100dvh - 96px);
-  overflow: auto;
-  border-radius: 22px;
-  background: #1d4ed8;
   color: #fff;
-  box-shadow: 0 22px 40px rgba(15, 23, 42, 0.28);
+  /* Hidden overflow on this box makes the browser skip backface-visibility, so the front stays visible after the turn. */
+  overflow: visible;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
-.face.front {
+.face-clip {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 16px 16px 14px;
+  max-height: calc(100dvh - 96px);
   overflow: hidden;
+  border-radius: 22px;
+  background: #1d4ed8;
+  box-shadow: 0 22px 40px rgba(15, 23, 42, 0.28);
 }
+
+.face.front { position: relative; }
 
 .face.back {
   position: absolute;
   inset: 0;
   transform: rotateY(180deg);
-  overflow: hidden;
   min-height: 0;
+}
+
+.face.back .face-clip {
+  height: 100%;
+  max-height: none;
 }
 
 .face-scroll {
