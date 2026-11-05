@@ -84,7 +84,7 @@ def lookup(ip, timeout=4, get=None):
     # Import requests only when this process will open a socket. The header
     # helpers stay usable in a check that never installs the HTTP library.
     if get is None:
-        import requests
+        import requests # pyright: ignore[reportMissingModuleSource]
 
         get = requests.get
 

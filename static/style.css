@@ -561,7 +561,9 @@ button[type="submit"]:active { opacity: 0.82; }
 @media (max-width: 700px) {
   .modal-stack { width: min(360px, 100%); }
   .kit-name { font-size: 26px; }
-  .jersey { font-size: 108px; top: 36px; }
+  /* The number is out of flow, so the name needs a right inset or it runs under the digits. */
+  .kit-id > div { padding-right: 128px; }
+  .jersey { font-size: 68px; top: 12px; right: 10px; }
   .kit-meta {
     display: -webkit-box;
     -webkit-line-clamp: 2;
